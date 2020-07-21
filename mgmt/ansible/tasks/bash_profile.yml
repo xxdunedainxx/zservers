@@ -1,0 +1,19 @@
+- name: Clean zprofile
+  file:
+    state: absent
+    path: "~/.zprofile"
+
+- name: Generate a bash profile string and appends it to .profile
+  shell: |
+    echo "adding to ~/.profile"
+    echo "
+    ## This file was injected by zserver ansible ##
+    export  GIT_USERNAME={{ git_username }}\n
+    export  GIT_PASSWORD={{ git_pw }}\n
+    " >> ~/.zprofile
+    if grep -Fxq "source ~/.zprofile" ~/.profile; then
+      echo "zprofile exists"
+    else
+      echo "injecting zprofile"
+      echo "source ~/.zprofile" >> ~/.profile
+    fi

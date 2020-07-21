@@ -1,0 +1,5 @@
+- name: Transfer the script
+  copy: src=../../bash/ubuntu/docker/install.sh dest=/home/ansible/workspace/docker-install.sh mode=755
+
+- name: Install docker 
+  shell: /home/ansible/workspace/docker-install.sh
