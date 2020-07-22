@@ -4,15 +4,16 @@
 # docker run -d -p 8080:80 --mount src=`pwd`,target=/mnt/mount,type=bind 003ea6280921 
 # docker run -d -p 8080:80 --mount src=/dev/sdb1,target=/mnt/mount,type=bind 003ea6280921 
 ARG UBUNTU_IMAGE=ubuntu:latest
-ARG MINIO_SECRET_KEY=minio1337
-ARG MINIO_ACCESS_KEY=minio
-ARG ARCHITECTURE=386
 
 # Load ubuntu
 FROM ${UBUNTU_IMAGE}
 
 # Expose minio service
 EXPOSE 80
+
+ARG MINIO_SECRET_KEY=minio1337
+ARG MINIO_ACCESS_KEY=minio
+ARG ARCHITECTURE=386
 
 ENV BUILD_DIR=usr/src/build
 ENV MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
