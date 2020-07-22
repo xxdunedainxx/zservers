@@ -1,0 +1,11 @@
+zservers:
+  hosts:
+    core:
+      ansible_host: "{{ core_ip }}" 
+      ansible_connection: ssh 
+      ansible_user: ubuntu
+
+    media_center:
+      ansible_host: "{{ media_center_ip }}" 
+      ansible_connection: ssh
+      ansible_user: pi

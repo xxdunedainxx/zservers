@@ -1,0 +1,28 @@
+- include_tasks: ../tasks/util/print.yml
+  vars:
+    msg: "Bootstrapping ~.profile, git username: {{ git_username }}"
+
+- name: Clean zprofile
+  file:
+    state: absent
+    path: "~/.zprofile"
+
+- name: Generate a bash profile string and appends it to .profile
+  shell: |
+    echo "adding to ~/.profile"
+    echo "
+    ## This file was injected by zserver ansible ##
+    export  GIT_USERNAME={{ git_username }}\n
+    export  GIT_PASSWORD={{ git_pw }}\n
+    export  MINIO_ACCESS_KEY={{ minio_id }}\n
+    export  MINIO_SECRET_KEY={{ minio_secret }}\n
+    export  MINIO_PORT={{ minio_p }}\n
+    export  MINIO_MOUNT={{ minio_m }}\n
+    export  LINUX_ARCHITECTURE={{ architecture }}\n
+    " >> ~/.zprofile
+    if grep -Fxq "source ~/.zprofile" ~/.profile; then
+      echo "zprofile exists"
+    else
+      echo "injecting zprofile"
+      echo "source ~/.zprofile" >> ~/.profile
+    fi

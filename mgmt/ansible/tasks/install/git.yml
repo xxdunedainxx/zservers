@@ -1,0 +1,5 @@
+- name: Transfer the script
+  copy: src=../../bash/ubuntu/git/install.sh dest=/home/ansible/workspace/git-install.sh mode=755
+
+- name: Install git 
+  shell: /home/ansible/workspace/git-install.sh

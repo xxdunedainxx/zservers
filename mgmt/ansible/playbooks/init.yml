@@ -1,0 +1,21 @@
+- hosts: core
+  connection: local
+  become: yes # enables sudo, will prompt for password
+  vars_files:
+    - ../tasks/env.yml
+  tasks:
+    - include_tasks: ../tasks/bash_profile.yml
+
+    - include_tasks: ../tasks/util/print.yml
+      vars:
+        msg: "Loading.. Host var info: {{ hostvars }}, {{ git_username }}"
+
+    # Start up workbench
+    - include_tasks: ../tasks/util/mkdir.yml
+      vars:
+        dir: "{{ zserver_workspace }}"
+
+    # Install required packages for 'core' system
+    - include_tasks: ../tasks/install/docker.yml
+    - include_tasks: ../tasks/install/git.yml
+    #- include_tasks: ../tasks/install/minio.yml
