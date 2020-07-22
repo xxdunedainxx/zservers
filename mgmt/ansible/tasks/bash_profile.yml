@@ -1,3 +1,7 @@
+- include_tasks: ../tasks/util/print.yml
+  vars:
+    msg: "Bootstrapping ~.profile, git username: {{ git_username }}"
+
 - name: Clean zprofile
   file:
     state: absent
