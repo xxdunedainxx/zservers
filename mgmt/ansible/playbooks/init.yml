@@ -16,5 +16,6 @@
         dir: "{{ zserver_workspace }}"
 
     # Install required packages for 'core' system
-    - include_tasks: ../tasks/install/docker.yml
-    - include_tasks: ../tasks/install/git.yml
+    #- include_tasks: ../tasks/install/docker.yml
+    #- include_tasks: ../tasks/install/git.yml
+    - include_tasks: ../tasks/install/minio.yml

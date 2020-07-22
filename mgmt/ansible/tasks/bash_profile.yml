@@ -14,6 +14,11 @@
     ## This file was injected by zserver ansible ##
     export  GIT_USERNAME={{ git_username }}\n
     export  GIT_PASSWORD={{ git_pw }}\n
+    export  MINIO_ACCESS_KEY={{ minio_id }}\n
+    export  MINIO_SECRET_KEY={{ minio_secret }}\n
+    export  MINIO_PORT={{ minio_p }}\n
+    export  MINIO_MOUNT={{ minio_m }}\n
+    export  LINUX_ARCHITECTURE={{ architecture }}\n
     " >> ~/.zprofile
     if grep -Fxq "source ~/.zprofile" ~/.profile; then
       echo "zprofile exists"

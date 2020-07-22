@@ -1,0 +1,11 @@
+- name: Transfer the minio install script
+  copy: src=../../bash/ubuntu/minio/install.sh dest=/home/ansible/workspace/minio-install.sh mode=755
+
+- name: Transfer the minio run script
+  copy: src=../../bash/ubuntu/minio/run.sh dest=/home/ansible/workspace/minio-run.sh mode=755
+
+- name: Install Minio 
+  shell: /home/ansible/workspace/minio-install.sh
+
+- name: Run Minio 
+  shell: /home/ansible/workspace/minio-run.sh
