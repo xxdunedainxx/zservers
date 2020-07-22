@@ -3,8 +3,10 @@
 # docker build .
 # docker run -d -P --mount src=`pwd`,target=/mnt/mount,type=bind 003ea6280921 
 
+ARG UBUNTU_IMAGE=ubuntu:latest
+
 # Load ubuntu
-FROM ubuntu:latest
+FROM ${UBUNTU_IMAGE}
 
 # Expose minio service
 EXPOSE 80
