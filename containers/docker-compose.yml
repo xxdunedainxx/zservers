@@ -10,5 +10,5 @@ services:
     #command: -server -advertise HOSTIP -bootstrap
 
   zdiscord:
-    image: 095be85e99b1
+    image: dd01d599ca9e
     tty: true
