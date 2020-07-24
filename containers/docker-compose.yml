@@ -1,0 +1,14 @@
+version: "2"
+services:
+  minio:
+    image: 1d3caa0a2e09
+    ports:
+      - "0.0.0.0:8080:8080"
+    volumes:
+     - /media/storage:/mnt/mount
+    tty: true
+    #command: -server -advertise HOSTIP -bootstrap
+
+  zdiscord:
+    image: 095be85e99b1
+    tty: true
