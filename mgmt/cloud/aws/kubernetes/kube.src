@@ -1,0 +1,5 @@
+#! /bin/bash
+
+kubeInit() { 
+  zaws_init
+}

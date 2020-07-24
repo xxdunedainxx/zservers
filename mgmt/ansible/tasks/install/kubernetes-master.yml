@@ -1,0 +1,8 @@
+/usr/bin/kube-scheduler
+/usr/bin/kube-controller-manager
+/usr/bin/kube-apiserver
+https://etcd.io/docs/v3.4.0/dl-build/#build-the-latest-version
+
+sudo apt-get install -y kubectl
+apt-get install golang
+export GOPATH=$(which go)
