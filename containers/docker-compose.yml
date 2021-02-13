@@ -12,6 +12,10 @@ services:
 #  zdiscord:
 #    image: dd01d599ca9e
 #    tty: true
+  nginx:
+    image: 0ec0a9a30967 #ingress
+    ports:
+      - "0.0.0.0:80:80"
   vault:
     image: vault
     cap_add:
