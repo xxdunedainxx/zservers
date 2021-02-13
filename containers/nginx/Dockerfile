@@ -1,8 +1,7 @@
 # Docker commands
-# docker run -ti --entrypoint /bin/sh band-site
 # docker build . --build-arg UBUNTU_IMAGE=i386/ubuntu:latest
-# docker run -d -p 8080:80 --mount src=`pwd`,target=/mnt/mount,type=bind 003ea6280921 
-# docker run -d -p 8080:80 --mount src=/dev/sdb1,target=/mnt/mount,type=bind 003ea6280921 
+# docker build . --build-arg NGINX_CONF_OVERRIDE=./configs/nginx-compose --build-arg UBUNTU_IMAGE=i386/ubuntu:latest
+# docker run -d --name=ingress -p 80:80 b409beaee6b6
 
 ARG UBUNTU_IMAGE=ubuntu:latest
 
@@ -13,11 +12,13 @@ FROM ${UBUNTU_IMAGE}
 EXPOSE 80
 
 ARG NGINX_CONF_OVERRIDE=N/A
-ARG MINIO_SERVER=10.0.0.110:8080
+ARG MINIO_SERVER=10.0.0.110:8080     
+ARG VAULT_SERVER=host.docker.internal:8000
 
 ENV BUILD_DIR=usr/src/build
 ENV NGINX_CONF_OVERRIDE=${NGINX_CONF_OVERRIDE}
 ENV MINIO_SERVER=${MINIO_SERVER}
+ENV VAULT_SERVER=${VAULT_SERVER}
 
 RUN mkdir $BUILD_DIR -p
 

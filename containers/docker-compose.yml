@@ -1,14 +1,21 @@
 version: "2"
 services:
-  minio:
-    image: 1d3caa0a2e09
+#  minio:
+#    image: 1d3caa0a2e09
+#    ports:
+#      - "0.0.0.0:8080:8080"
+#    volumes:
+#     - /media/storage:/mnt/mount
+#    tty: true
+#    #command: -server -advertise HOSTIP -bootstrap
+#
+#  zdiscord:
+#    image: dd01d599ca9e
+#    tty: true
+  vault:
+    image: vault
+    cap_add:
+      - IPC_LOCK
     ports:
+      - "0.0.0.0:8200:8200"
       - "0.0.0.0:8080:8080"
-    volumes:
-     - /media/storage:/mnt/mount
-    tty: true
-    #command: -server -advertise HOSTIP -bootstrap
-
-  zdiscord:
-    image: dd01d599ca9e
-    tty: true
