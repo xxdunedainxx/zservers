@@ -1,4 +1,4 @@
-version: "2"
+version: "3.2"
 services:
 #  minio:
 #    image: 1d3caa0a2e09
@@ -12,10 +12,10 @@ services:
 #  zdiscord:
 #    image: dd01d599ca9e
 #    tty: true
-  nginx:
-    image: 0ec0a9a30967 #ingress
-    ports:
-      - "0.0.0.0:80:80"
+#  nginx:
+#    image: ingress
+#    ports:
+#      - "0.0.0.0:80:80"
   vault:
     image: vault
     cap_add:
@@ -23,3 +23,33 @@ services:
     ports:
       - "0.0.0.0:8200:8200"
       - "0.0.0.0:8080:8080"
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /Users/zach.mcfadden/Documents/testes:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.11.0
+    environment:
+#      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_HOSTS: http://localhost:9200
+#  minio:
+#    image: minio
+#    ports:
+#      - "0.0.0.0:8888:8888"
+#    volumes:
+#      - type: 'bind'
+#        source: /Users/zach.mcfadden/testminio
+#        target: /mnt/mount

@@ -1,8 +1,7 @@
 #! /bin/bash
 
 # Download minio 
-wget "https://dl.min.io/server/minio/release/linux-${ARCHITECTURE}/minio"
-
+wget "https://dl.min.io/server/minio/release/${ARCHITECTURE}/minio"
 # Alow execution
 chmod +x minio
 
