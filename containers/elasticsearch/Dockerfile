@@ -1,4 +1,5 @@
-FROM elasticsearch:7.5.1
+FROM ind3x/rpi-elasticsearch:latest 
+#elasticsearch:7.5.1
 
 COPY logging.yml /usr/share/elasticsearch/config/
 COPY elasticsearch.yml /usr/share/elasticsearch/config/

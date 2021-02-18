@@ -6,6 +6,9 @@ source ~/.zservers
 ip=$(ipconfig getifaddr en0)
 home=$(pwd)
 
+
+echo $DISCORD_API_KEY
+
 build_container_service() {
   # $1 == service to build 
   # $2 == docker command
@@ -26,26 +29,34 @@ docker_compose_start() {
 # Build docker images
 
 # Minio
-build_container_service "minio" "docker build . --build-arg MINIO_PORT=8888 --build-arg ARCHITECTURE=linux-amd64 -t minio"
+#build_container_service "minio" "docker build . --build-arg MINIO_PORT=8888 --build-arg ARCHITECTURE=linux-arm -t minio"
 
 
-VAULT
-build_container_service "vault" " \
-    docker build . --build-arg \
-       SECRET_JSON_STR=\"{\"discord\":
-       [{\"key\":\"token\",
-       \"value\":\"${DISCORD_API_KEY}\"
-       }]}\" \
-       -t vault"
-
-build_container_service "nginx" " \
-docker build . --build-arg NGINX_CONF_OVERRIDE=./configs/nginx-compose \
---build-arg VAULT_SERVER=${ip}:8200 --build-arg MINIO_SERVER=${ip}:8080 -t ingress \
+# VAULT
+SECRETS_STR="
+{\"discord\":
+  [
+    {
+      \"key\":\"token\",
+      \"value\":\"${DISCORD_API_KEY}\"
+    }
+  ]
+}
 "
 
-build_container_service "elasticsearch" "docker build . -t es"
+echo $SECRETS_STR
 
-build_container_service "kibana" "docker build . -t kib"
+build_container_service "vault" " \
+    docker build . --build-arg \
+       SECRET_JSON_STR=\"${SECRETS_STR}\" --no-cache"
+#build_container_service "nginx" " \
+#docker build . --build-arg NGINX_CONF_OVERRIDE=./configs/nginx-compose \
+#--build-arg VAULT_SERVER=${ip}:8200 --build-arg MINIO_SERVER=${ip}:8080 -t ingress \
+#"
+
+#build_container_service "elasticsearch" "docker build . -t es"
+
+#build_container_service "kibana" "docker build . -t kib"
 
 cd ./containers
 

@@ -1,4 +1,5 @@
-FROM kibana:7.5.1
+FROM ind3x/rpi-kibana
+#ibana:7.5.1
 
 # TODO kibana.yml
 
