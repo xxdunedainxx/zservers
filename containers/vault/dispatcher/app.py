@@ -6,6 +6,8 @@ import time
 VAULT_TOKEN_JSON=os.getenv('VAULT_TOKEN_JSON') if os.getenv('VAULT_TOKEN_JSON') is not None else {}
 ZK_DISCOVERY_HOST=os.getenv('SERVICE_DISCOVERY')
 VAULT_INTERNAL_ADDR=os.getenv('VAULT_INTERNAL_ADDR')
+TRUSTED_TOKEN=os.getenv('TRUSTED_TOKEN')
+VAULT_EXTERNAL_ADDR=os.getenv('VAULT_EXTERNAL_ADDR')
 
 print(f"ZK_DISCOVERY_HOST {ZK_DISCOVERY_HOST}")
 
@@ -34,7 +36,7 @@ def init_zk_client():
     print('services exists?')
 
   zk.ensure_path("/services/vault")
-  discoveryString=f"{{\"VAULT_HOST\":\"{VAULT_INTERNAL_ADDR}\"}}"
+  discoveryString=f"{{\"VAULT_INTERNAL_ADDR\":\"{VAULT_INTERNAL_ADDR}\",\"VAULT_EXTERNAL_ADDR\":\"{VAULT_EXTERNAL_ADDR}\",\"TRUSTED_TOKEN\":\"{TRUSTED_TOKEN}\"}}"
   zk.set("/services/vault", bytes(discoveryString, encoding='UTF-8'))
 
 def init_vault_secrets():

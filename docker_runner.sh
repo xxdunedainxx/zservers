@@ -48,7 +48,7 @@ SECRETS_STR="
 
 echo $SECRETS_STR
 
-#build_container_service "vault" "
+# build_container_service "vault" "
 #   docker build . --build-arg
 #      SECRET_JSON_STR=\"${SECRETS_STR}\" --no-cache -t zvault"
 
@@ -67,10 +67,10 @@ echo $SECRETS_STR
 
 # build_container_service "redis" "docker build . -t redis"
 
-build_container_service "zdiscord" "git clone https://github.com/xxdunedainxx/zdiscord.git &&
- cd zdiscord &&
- docker build . -t zdiscord
-"
+#build_container_service "zdiscord" "git clone https://github.com/xxdunedainxx/zdiscord.git &&
+# cd zdiscord &&
+# docker build . -t zdiscord
+#"
 
 cd ./containers
 

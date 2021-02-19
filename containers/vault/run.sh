@@ -7,6 +7,7 @@ export SECRET_JSON_STR=${SECRET_JSON_STR:='\{\}'}
 export VAULT_ADDR=${VAULT_ADDR:=http://0.0.0.0:8200}
 export VAULT_DEV_LISTEN_ADDRESS=${VAULT_ADDR:=0.0.0.0:8200}
 export VAULT_INTERNAL_ADDR=${VAULT_INTERNAL_ADDR:=vault:8200}
+export VAULT_EXTERNAL_ADDR=${VAULT_EXTERNAL_ADDR:=localhost:8200}
 
 nohup vault server -dev -dev-listen-address=$VAULT_ADDR -dev-root-token-id=$TRUSTED_TOKEN -config vault-server.hcl >/dev/stdout 2>&1 &
 

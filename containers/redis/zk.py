@@ -3,6 +3,10 @@ import time
 import os
 
 REDIS_INTERNAL_HOST=os.getenv('REDIS_INTERNAL_HOST')
+REDIS_INTERNAL_HOST_PORT=os.getenv('REDIS_INTERNAL_HOST_PORT')
+REDIS_EXTERNAL_HOST=os.getenv('REDIS_EXTERNAL_HOST')
+REDIS_EXTERNAL_HOST_PORT=os.getenv('REDIS_EXTERNAL_HOST_PORT')
+
 ZK_DISCOVERY_HOST=os.getenv('SERVICE_DISCOVERY')
 ZK_DISCOVERY_PATH="/services/redis"
 
@@ -29,7 +33,14 @@ def my_listener(state):
 def init_zk_client():
   zk.add_listener(my_listener)
   zk.ensure_path(ZK_DISCOVERY_PATH)
-  discoveryString=f"{{\"REDIS_INTERNAL_HOST\":\"{REDIS_INTERNAL_HOST}\"}}"
+  discoveryString=f"""
+      {{
+      \"REDIS_INTERNAL_HOST\":\"{REDIS_INTERNAL_HOST}\",
+      \"REDIS_INTERNAL_HOST_PORT\":\"{REDIS_INTERNAL_HOST_PORT}\",
+      \"REDIS_EXTERNAL_HOST\":\"{REDIS_EXTERNAL_HOST}\",
+      \"REDIS_EXTERNAL_HOST_PORT\":\"{REDIS_EXTERNAL_HOST_PORT}\"
+      }}
+  """
   zk.set(ZK_DISCOVERY_PATH, bytes(discoveryString, encoding='UTF-8'))
 
 init_zk_client()

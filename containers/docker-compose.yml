@@ -32,6 +32,8 @@ services:
       VAULT_ADDR: '0.0.0.0:8200'
       SECRET_JSON_STR: '{"discord":[{"key":"apiKey","value":"somekey"}]}'
       VAULT_INTERNAL_ADDR: 'vault:8200'
+      TRUSTED_TOKEN: 'replaceme'
+      VAULT_EXTERNAL_ADDR: 'http://localhost:8200'
 
   elasticsearch:
     image: es
@@ -85,7 +87,11 @@ services:
     ports:
       - "6379:6379"
     environment:
-      ES_INTERNAL_HOST: 'redis:9200'
+      ES_INTERNAL_HOST: 'redis:6379'
       SERVICE_DISCOVERY: 'servicediscovery:2181'
+      REDIS_EXTERNAL_HOST: 'localhost'
+      REDIS_INTERNAL_HOST: 'redis'
+      REDIS_EXTERNAL_HOST_PORT: '6379'
+      REDIS_INTERNAL_HOST_PORT: '6379'
     depends_on:
      - servicediscovery
