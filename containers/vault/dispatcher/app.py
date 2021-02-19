@@ -1,23 +1,44 @@
 import os
-
-from flask import Flask, request
 import json
-# set the project root directory as the static folder, you can set others.
+from kazoo.client import KazooClient, KazooState
+import time
 
-TRUSTED_TOKEN=os.getenv('TRUSTED_TOKEN')
-VAULT_TOKEN_JSON=os.getenv('VAULT_TOKEN_JSON')
+VAULT_TOKEN_JSON=os.getenv('VAULT_TOKEN_JSON') if os.getenv('VAULT_TOKEN_JSON') is not None else {}
+ZK_DISCOVERY_HOST=os.getenv('SERVICE_DISCOVERY')
 
-print(f"TRUSTED TOKEN {TRUSTED_TOKEN}")
+print(f"ZK_DISCOVERY_HOST {ZK_DISCOVERY_HOST}")
 
-app = Flask(__name__, static_url_path='')
+zk = KazooClient(hosts=ZK_DISCOVERY_HOST)
+zk.start()
+
+def my_listener(state):
+  print('ZK event')
+  if state == KazooState.CONNECTED:
+    print('connected...')
+  if state == KazooState.LOST:
+    print('lost?')
+    # Register somewhere that the session was lost
+  elif state == KazooState.SUSPENDED:
+    # Handle being disconnected from Zookeeper
+    print('suspsended?')
+  else:
+    # Handle being connected/reconnected to Zookeeper
+    print('state change')
+
+
+def init_zk_client():
+  zk.add_listener(my_listener)
+  #children = zk.get_children("/my/favorite/node", watch=my_listener)
+  if(zk.exists('services')):
+    print('services exists?')
+
+  zk.ensure_path("/services/vault")
+  zk.set("/services/vault", b"{\"VAULT_HOST\":\"some port\"}")
 
 def init_vault_secrets():
-  secrets=os.getenv('SECRET_JSON_STR')
-  
+  secrets=os.getenv('SECRET_JSON_STR') if os.getenv('SECRET_JSON_STR') is not None else '{}'
   print(f"Secrets: {secrets}")
-
   load_secrets=json.loads(secrets)
-
   # We assume the json datastructure is in the form: {'service':[...collection of secrets...]}
   for key in load_secrets:
     print(f"key:{key}, {load_secrets}")
@@ -25,19 +46,16 @@ def init_vault_secrets():
       print(secret)
       print(f"vault kv put secret/creds/{key} {secret['key']}={secret['value']}")
       print(os.system(f"vault kv put secret/creds/{key} {secret['key']}={secret['value']}"))
+  print('FINISHED SETTING UP SECRETS')
 
 init_vault_secrets()
 
-@app.route('/')
-def root():
-  return 'Im a vault plugin! :D '
+if ZK_DISCOVERY_HOST != '' and ZK_DISCOVERY_HOST is not None:
+  init_zk_client()
+else:
+  print('Service discovery is not configured!')
 
-@app.route('/token')
-def token():
-  token=request.args.get('token')
-  if token == TRUSTED_TOKEN:
-    return VAULT_TOKEN_JSON
-  else: 
-    return "no auth, or missing servicename"
-
-app.run(host='0.0.0.0', port=8080)
+print('Running main loop')
+while(True):
+  print('Waiting for Zookeeper events..')
+  time.sleep(5)

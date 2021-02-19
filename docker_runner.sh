@@ -46,9 +46,10 @@ SECRETS_STR="
 
 echo $SECRETS_STR
 
-build_container_service "vault" " \
-    docker build . --build-arg \
-       SECRET_JSON_STR=\"${SECRETS_STR}\" --no-cache"
+build_container_service "vault" "
+   docker build . --build-arg
+      SECRET_JSON_STR=\"${SECRETS_STR}\" --no-cache -t zvault"
+
 #build_container_service "nginx" " \
 #docker build . --build-arg NGINX_CONF_OVERRIDE=./configs/nginx-compose \
 #--build-arg VAULT_SERVER=${ip}:8200 --build-arg MINIO_SERVER=${ip}:8080 -t ingress \
@@ -57,6 +58,10 @@ build_container_service "vault" " \
 #build_container_service "elasticsearch" "docker build . -t es"
 
 #build_container_service "kibana" "docker build . -t kib"
+
+#build_container_service "servicediscovery" "docker build . -t servicediscovery"
+#
+#build_container_service "servicediscovery-ui" "docker build . -t servicediscovery-ui"
 
 cd ./containers
 
