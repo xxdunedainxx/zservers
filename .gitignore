@@ -1,3 +1,4 @@
 containers/minio/env.sh
 .DS_STORE
 .idea/
+containers/zdiscord/zdiscord/

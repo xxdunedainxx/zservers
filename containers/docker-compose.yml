@@ -31,19 +31,22 @@ services:
       SERVICE_DISCOVERY: 'servicediscovery:2181'
       VAULT_ADDR: '0.0.0.0:8200'
       SECRET_JSON_STR: '{"discord":[{"key":"apiKey","value":"somekey"}]}'
+      VAULT_INTERNAL_ADDR: 'vault:8200'
 
-#  elasticsearch:
-#    image: es
-#    container_name: elasticsearch
-#    ports:
-#      - "0.0.0.0:9200:9200"
-#
-#  kibana:
-#    image: kib
-#    container_name: kibana
-#    ports:
-#      - "0.0.0.0:5601:5601"
+  elasticsearch:
+    image: es
+    container_name: elasticsearch
+    ports:
+      - "0.0.0.0:9200:9200"
+    environment:
+      ES_INTERNAL_HOST: 'elasticsearch:9200'
+      SERVICE_DISCOVERY: 'servicediscovery:2181'
 
+  kibana:
+    image: kib
+    container_name: kibana
+    ports:
+      - "0.0.0.0:5601:5601"
   servicediscovery:
     image: servicediscovery
     restart: always
@@ -66,6 +69,7 @@ services:
     depends_on:
      - api
     restart: always
+
   api:
     image: elkozmon/zoonavigator-api:latest
     container_name: zoonavigator-api
@@ -74,3 +78,14 @@ services:
     depends_on:
      - servicediscovery
     restart: always
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      ES_INTERNAL_HOST: 'redis:9200'
+      SERVICE_DISCOVERY: 'servicediscovery:2181'
+    depends_on:
+     - servicediscovery
