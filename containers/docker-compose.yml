@@ -1,14 +1,98 @@
-version: "2"
+version: "3.2"
 services:
-  minio:
-    image: 1d3caa0a2e09
-    ports:
-      - "0.0.0.0:8080:8080"
-    volumes:
-     - /media/storage:/mnt/mount
-    tty: true
-    #command: -server -advertise HOSTIP -bootstrap
+#command: -server -advertise HOSTIP -bootstrap
+#
+#  zdiscord:
+#    image: dd01d599ca9e
+#    tty: true
+#  nginx:
+#    image: ingress
+#    ports:
+#      - "0.0.0.0:80:80"
+#  minio:
+#    image: minio
+#    container_name: minio
+#    ports:
+#     - "0.0.0.0:8888:8888"
+#    volumes:
+#    - /Users/zach.mcfadden/Documents/projects/side_stuff/zservers:/mnt/mount/something
+#    tty: true
 
-  zdiscord:
-    image: a2d9608d94c2
-    tty: true
+  vault:
+    image: zvault
+    container_name: vault
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "0.0.0.0:8200:8200"
+      - "0.0.0.0:8080:8080"
+    environment:
+      VAULT_DEV_LISTEN_ADDRESS: '0.0.0.0:8200'
+      SERVICE_DISCOVERY: 'servicediscovery:2181'
+      VAULT_ADDR: '0.0.0.0:8200'
+      SECRET_JSON_STR: '{"discord":[{"key":"apiKey","value":"somekey"}]}'
+      VAULT_INTERNAL_ADDR: 'vault:8200'
+      TRUSTED_TOKEN: 'replaceme'
+      VAULT_EXTERNAL_ADDR: 'http://localhost:8200'
+
+  elasticsearch:
+    image: es
+    container_name: elasticsearch
+    ports:
+      - "0.0.0.0:9200:9200"
+    environment:
+      ES_INTERNAL_HOST: 'elasticsearch:9200'
+      SERVICE_DISCOVERY: 'servicediscovery:2181'
+
+  kibana:
+    image: kib
+    container_name: kibana
+    ports:
+      - "0.0.0.0:5601:5601"
+  servicediscovery:
+    image: servicediscovery
+    restart: always
+    container_name: servicediscovery
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
+
+  web:
+    image: elkozmon/zoonavigator-web:latest
+    container_name: zoonavigator-web
+    ports:
+     - "9001:9001"
+    environment:
+      API_HOST: "api"
+      API_PORT: 9000
+      WEB_HTTP_PORT: 9001
+    depends_on:
+     - api
+    restart: always
+
+  api:
+    image: elkozmon/zoonavigator-api:latest
+    container_name: zoonavigator-api
+    environment:
+      SERVER_HTTP_PORT: 9000
+    depends_on:
+     - servicediscovery
+    restart: always
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      ES_INTERNAL_HOST: 'redis:6379'
+      SERVICE_DISCOVERY: 'servicediscovery:2181'
+      REDIS_EXTERNAL_HOST: 'localhost'
+      REDIS_INTERNAL_HOST: 'redis'
+      REDIS_EXTERNAL_HOST_PORT: '6379'
+      REDIS_INTERNAL_HOST_PORT: '6379'
+    depends_on:
+     - servicediscovery
+
